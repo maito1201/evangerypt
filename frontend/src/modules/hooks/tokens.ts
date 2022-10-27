@@ -7,16 +7,14 @@ export const useTokens = (client?: ethers.Contract) => {
   useEffect(() => {
     const getTokens = async () => {
       if (!client) return
-      const { totalSupply, tokenByIndex, tokenURI } = client.functions
+      const { totalSupply, tokenByIndex, tokenURI, estimateEarn } = client.functions
       const supply = parseInt(await totalSupply())
       const items: TokenItem[] = []
       for (let i = 0; i < supply; i++) {
-        const tokenID = parseInt(await tokenByIndex(i))
-        const uri = await tokenURI(tokenID)
-        const tokenItem: TokenItem = {
-          tokenID: tokenID,
-          youtubeURL: uri
-        }
+        const id = parseInt(await tokenByIndex(i))
+        const url = await tokenURI(id)
+        const earn = await estimateEarn(id)
+        const tokenItem: TokenItem = { id, url, earn}
         items.push(tokenItem)
       }
       setTokens(items)
