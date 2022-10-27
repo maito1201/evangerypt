@@ -1,4 +1,5 @@
 export type TokenItem = {
-  tokenID: number
-  youtubeURL: string
+  id: number
+  url: string
+  earn: number
 }

@@ -11,7 +11,7 @@ export const TokenList = (props: TokenListProps) => {
   return (
     <>
       {tokens.map((token) => (
-        <TokenCard token={token} key={token.tokenID} />
+        <TokenCard token={token} key={token.id} />
       ))}
     </>
   )
