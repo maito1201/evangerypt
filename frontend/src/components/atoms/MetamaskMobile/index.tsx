@@ -1,4 +1,4 @@
-const metamaskAppDeepLink = 'dapp://pm-dao.github.io/tokyo-web3-hackathon/'
+const metamaskAppDeepLink = 'dapp://maito1201.github.io/evangerypt/'
 
 export const MetamaskMobile = () => {
   return (

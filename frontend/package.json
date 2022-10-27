@@ -1,11 +1,11 @@
 {
-  "name": "tokyo-web3-hackathon",
+  "name": "evangerypt",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build --base=/tokyo-web3-hackathon/",
+    "build": "tsc && vite build --base=/evangerypt/",
     "preview": "vite preview",
     "lint": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}'",
     "format": "prettier --write **/*.{ts,tsx}",

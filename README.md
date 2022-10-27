@@ -1,4 +1,4 @@
-# tokyo-web3-hackathon
+# evangerypt
 
 ## technical stacks
 
