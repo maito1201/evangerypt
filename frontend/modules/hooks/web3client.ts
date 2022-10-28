@@ -28,11 +28,12 @@ export const useWeb3Client = () => {
     const init = async () => {
       const provider = await detectEthereumProvider()
       if (provider && window.ethereum?.isMetaMask) {
+        await window.ethereum.enable()
         let provider = new ethers.providers.Web3Provider(window.ethereum)
+        //await provider.send('eth_requestAccounts', []);
         const signer = await provider.getSigner()
         const address = await signer.getAddress()
         setAccount(address)
-
         const contract = new ethers.Contract(nft_address, artifact.abi, provider)
         setClient(contract.connect(signer))
 
@@ -62,6 +63,6 @@ export const useWeb3Client = () => {
       }
     }
     init()
-  }, [window.ethereum])
+  }, [])
   return { account, setAccount, chain, client }
 }
