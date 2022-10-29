@@ -1,5 +1,6 @@
+import React from 'react'
 import { TokenItem } from '../../../types/tokenItem'
-import { TokenCard } from '../../molecules'
+import { TokenCard } from '../'
 
 type TokenListProps = {
   tokens: TokenItem[]

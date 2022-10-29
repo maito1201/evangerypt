@@ -9,7 +9,7 @@ async function main() {
   const EVT = await ethers.getContractFactory("EvangeryptToken");
   const token = await EVT.attach(contractAddress)
   const value = ethers.utils.parseEther('0.1')
-  const log = await token.safeMint(toAddress, 'https://shonenjumpplus.com/episode/10833519556325021854', { value: value })
+  const log = await token.safeMint(toAddress, 'https://polygon.technology/', { value: value })
   console.log(`minted ${log.hash}`);
 }
 
