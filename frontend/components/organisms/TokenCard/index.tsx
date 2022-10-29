@@ -1,7 +1,9 @@
+import React from 'react'
 import { TokenItem } from '../../../types/tokenItem'
+import { OGPImage } from '../../molecules'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
-//import ogs from 'open-graph-scraper'
+import { useOGP } from '../../../modules/hooks/buildOGP'
 
 type TokenItemProps = {
   token: TokenItem
@@ -9,14 +11,14 @@ type TokenItemProps = {
 
 export const TokenCard = (props: TokenItemProps) => {
   const { token } = props
+  const ogp = useOGP(token.url)
   const etherString = useMemo(() => {
     return ethers.utils.formatEther(token.earn.toString())
   }, [token.earn])
-  //const og = ogs({ url: token.url })
-  //console.log(og)
 
   return (
     <div>
+      { ogp && <OGPImage ogp={ogp} /> }
       {token.id}: {token.url}, {etherString}MATIC
     </div>
   )
