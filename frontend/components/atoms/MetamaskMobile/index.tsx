@@ -1,4 +1,4 @@
-const metamaskAppDeepLink = 'dapp://maito1201.github.io/evangerypt/'
+const metamaskAppDeepLink = 'dapp://evangerypt.vercel.app/'
 
 export const MetamaskMobile = () => {
   return (
