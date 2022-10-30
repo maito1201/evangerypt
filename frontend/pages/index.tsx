@@ -29,8 +29,8 @@ export default function Home() {
         {!account && isMobile && <MetamaskMobile />}
         <TokenList tokens={tokens} />
       </Box>
-      {account && <AddArea onClick={() => {setShowModal(true)}}/>}
-      <MintModal open={showModal} onClose={() => setShowModal(false)} />
+      {client && <AddArea onClick={() => {setShowModal(true)}}/>}
+      {client && <MintModal open={showModal} onClose={() => setShowModal(false)} client={client} />}
     </>
   )
 }

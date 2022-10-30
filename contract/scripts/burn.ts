@@ -1,6 +1,6 @@
 import { ethers } from "hardhat";
 
-const contractAddress = '0xC74d41a1e76A59590D59DF53f151B505f206d8c8'
+const contractAddress = '0x06be81a7DF86A9fb2C412cf9b10eB0B2aB233357'
 
 async function main() {
   const EVT = await ethers.getContractFactory("EvangeryptToken");
