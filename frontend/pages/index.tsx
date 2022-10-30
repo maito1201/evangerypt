@@ -7,6 +7,8 @@ import { useWeb3Client } from 'modules/hooks/web3client'
 import { useTokens } from 'modules/hooks/tokens'
 import { AddArea } from 'components/organisms/AddArea'
 import { MintModal } from 'components/modals'
+import { useIsMobileDevice } from 'modules/hooks/is_mobile'
+import { MetamaskMobile} from 'components/atoms'
 
 declare global {
   interface Window {
@@ -15,11 +17,17 @@ declare global {
 }
 
 export default function Home() {
+  const isMobile = useIsMobileDevice()
   const { account, chain, client } = useWeb3Client()
   const { tokens } = useTokens(client)
   const [showModal, setShowModal] = useState(false)
 
-  if (!client) return <>conecting...</>
+  if (!client) return (
+    <>
+      conecting...
+      { isMobile && <MetamaskMobile />}
+    </>
+  )
 
   return (
     <>
