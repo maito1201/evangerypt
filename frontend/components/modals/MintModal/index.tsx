@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Box, Modal, Typography, TextField, Button } from '@mui/material'
 import { ethers } from 'ethers'
 
@@ -12,10 +12,6 @@ const isValidUrl = (s: string) => {
   return /^http:\/\/.|^https:\/\/./.test(s)
 }
 
-const isValidEth = (e?: ethers.BigNumber) => {
-  return e?.gte(ethers.BigNumber.from(100))
-}
-
 const isValidDistribute = (num: number) => {
   return !isNaN(num) && num > 0
 }
@@ -26,8 +22,27 @@ export const MintModal = (props: MintModalProps) => {
   const [urlError, setUrlError] = useState(false)
   const [amount, setAmount] = useState('')
   const [amountError, setAmountError] = useState(false)
+  const [amountErrorMessage, setAmountErrorMessage] = useState('')
   const [distribute, setDistribute] = useState('')
   const [distributeError, setDistributeError] = useState(false)
+  const [balance, setBalance] = useState<ethers.BigNumber>(ethers.BigNumber.from(0))
+
+  useEffect(() => {
+    client.signer.getBalance().then((b: ethers.BigNumber) => {
+      setBalance(b)
+    })
+  }, [client.signer])
+
+  const isValidEth = useCallback((pay?: ethers.BigNumber, have?: ethers.BigNumber) => {
+    if (pay?.lt(ethers.BigNumber.from(100))) {
+      setAmountErrorMessage('more donate needded')
+      return false
+    } else if (have?.lt(pay || 0)) {
+      setAmountErrorMessage('input must be less than you have')
+      return false
+    }
+    return true
+  }, [])
 
   const handleSubmit = useCallback(async () => {
     let eth: ethers.BigNumber | undefined = undefined
@@ -37,10 +52,10 @@ export const MintModal = (props: MintModalProps) => {
     } catch {
       // nothing TODO
     }
-    if (!isValidUrl(url) || !isValidEth(eth) || !isValidDistribute(num)) return
+    if (!isValidUrl(url) || !isValidEth(eth, balance) || !isValidDistribute(num)) return
     await client.safeMint(await client.signer.getAddress(), url, num, { value: eth })
     onClose()
-  }, [url, amount, distribute])
+  }, [url, amount, distribute, balance, client, isValidEth, onClose])
 
   const handleChangeUrl = useCallback((s: string) => {
     setUrl(s)
@@ -55,8 +70,8 @@ export const MintModal = (props: MintModalProps) => {
     } catch {
       // nothing TODO
     }
-    setAmountError(!isValidEth(eth))
-  }, [])
+    setAmountError(!isValidEth(eth, balance))
+  }, [balance, isValidEth])
 
   const handleChangeDistribute = useCallback((s: string) => {
     setDistribute(s)
@@ -114,7 +129,7 @@ export const MintModal = (props: MintModalProps) => {
           <TextField
             onChange={e => handleChangeAmount(e.target.value)}
             error={amountError}
-            helperText={ amountError ? 'more donate needded' : ''}
+            helperText={ amountError ? amountErrorMessage : ''}
             variant='outlined'
             placeholder='donate'
             InputProps={{
@@ -157,6 +172,11 @@ export const MintModal = (props: MintModalProps) => {
         >
           submit
         </Button>
+        <Box mt='8px'>
+          <Typography variant='body2'>
+            {`you have ${ethers.utils.formatEther(balance)}MATIC`}
+          </Typography>
+        </Box>
       </Box>
     </Modal>
   )

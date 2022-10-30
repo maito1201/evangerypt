@@ -5,6 +5,7 @@ import { ethers } from 'ethers'
 import { TokenItem } from 'types/tokenItem'
 import { TokenCard } from 'components/organisms'
 import { DonateModal } from 'components/modals'
+import { CircularProgress } from '@mui/material'
 
 type TokenListProps = {
   tokens: TokenItem[]
@@ -29,7 +30,18 @@ export const TokenList = (props: TokenListProps) => {
     setTokenId(tokenId)
     setShowModal(true)
   }
-  if (!tokens) return <></>
+
+  if (!tokens.length) return (
+    <Box sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100vh'
+    }}>
+      <CircularProgress />
+    </Box>
+  )
+    
   return (
     <>
       <Box sx={{

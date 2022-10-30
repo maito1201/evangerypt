@@ -23,10 +23,14 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false)
 
   if (!client) return (
-    <>
-      conecting...
-      { isMobile && <MetamaskMobile />}
-    </>
+    <Box sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100vh'
+    }}>
+      {isMobile ? <MetamaskMobile /> : 'conecting...'}
+    </Box>
   )
 
   return (
