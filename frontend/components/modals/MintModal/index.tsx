@@ -39,6 +39,7 @@ export const MintModal = (props: MintModalProps) => {
     }
     if (!isValidUrl(url) || !isValidEth(eth) || !isValidDistribute(num)) return
     await client.safeMint(await client.signer.getAddress(), url, num, { value: eth })
+    onClose()
   }, [url, amount, distribute])
 
   const handleChangeUrl = useCallback((s: string) => {
