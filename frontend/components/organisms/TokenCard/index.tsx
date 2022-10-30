@@ -12,11 +12,13 @@ import { useOGP } from 'modules/hooks/buildOGP'
 
 type TokenItemProps = {
   token: TokenItem,
-  isLast: boolean
+  isLast: boolean,
+  onClickLink: (n: number) => void
+  onClickDonate: (n: number) => void
 }
 
 export const TokenCard = (props: TokenItemProps) => {
-  const { token, isLast } = props
+  const { token, isLast, onClickLink, onClickDonate } = props
   const ogp = useOGP(token.url)
   const etherString = useMemo(() => {
     return ethers.utils.formatEther(token.earn.toString())
@@ -36,7 +38,11 @@ export const TokenCard = (props: TokenItemProps) => {
         minWidth: '340px',
         textAlign: 'center' 
       }}>
-        { ogp && <OGPImage ogp={ogp} /> }
+        { ogp &&
+          <Box onClick={() => onClickLink(token.id)}>
+            <OGPImage ogp={ogp} />
+          </Box>
+        }
       </Box>
       <Box sx={{
         padding:'8px 16px',
@@ -53,19 +59,24 @@ export const TokenCard = (props: TokenItemProps) => {
             {etherString}MATIC
           </Typography>
         </Box>
-        <a href={ogp.url} target='_blank' rel='noopener noreferrer'>
-          <Box sx={{ wordBreak: 'break-all' }}>
+        <Box onClick={() => onClickLink(token.id)} sx={{ wordBreak: 'break-all' }}>
+          <a href={ogp.url} target='_blank' rel='noopener noreferrer'>
             <Typography variant='body1' color='#1d9bd1'>
               {token.url}
             </Typography>
-          </Box>
-        </a>
+          </a>
+        </Box>
         <Box sx={{ wordBreak: 'break-all' }}>
           <Typography variant='body1'>
           {ogp.siteName}
           </Typography>
         </Box>
-        <Button variant='contained' color='success' sx={{ mt: '16px', borderRadius: '18px' }}>
+        <Button
+          onClick={() => {onClickDonate(token.id)}}
+          variant='contained'
+          color='success'
+          sx={{ mt: '16px', borderRadius: '18px' }}
+        >
           donate
         </Button>
       </Box>

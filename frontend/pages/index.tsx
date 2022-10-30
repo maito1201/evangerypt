@@ -2,9 +2,7 @@ import React, { useState } from 'react'
 
 import { Box } from '@mui/material'
 
-import { MetamaskMobile } from 'components/atoms'
 import { TokenList, Navigation } from 'components/organisms'
-import { useIsMobileDevice } from 'modules/hooks/is_mobile'
 import { useWeb3Client } from 'modules/hooks/web3client'
 import { useTokens } from 'modules/hooks/tokens'
 import { AddArea } from 'components/organisms/AddArea'
@@ -17,20 +15,20 @@ declare global {
 }
 
 export default function Home() {
-  const isMobile = useIsMobileDevice()
   const { account, chain, client } = useWeb3Client()
   const { tokens } = useTokens(client)
   const [showModal, setShowModal] = useState(false)
+
+  if (!client) return <>conecting...</>
 
   return (
     <>
       <Navigation account={account} chain={chain} />
       <Box padding='0 8px' minHeight='100vh'>
-        {!account && isMobile && <MetamaskMobile />}
-        <TokenList tokens={tokens} />
+        <TokenList tokens={tokens} client={client} />
       </Box>
-      {client && <AddArea onClick={() => {setShowModal(true)}}/>}
-      {client && <MintModal open={showModal} onClose={() => setShowModal(false)} client={client} />}
+      <AddArea onClick={() => {setShowModal(true)}}/>
+      <MintModal open={showModal} onClose={() => setShowModal(false)} client={client} />
     </>
   )
 }
