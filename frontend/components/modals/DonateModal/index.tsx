@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Box, Modal, Typography, TextField, Button } from '@mui/material'
 import { ethers } from 'ethers'
 
@@ -9,14 +9,29 @@ type DonateModalProps = {
   client: ethers.Contract
 }
 
-const isValidEth = (e?: ethers.BigNumber) => {
-  return e?.gte(ethers.BigNumber.from(100))
-}
-
 export const DonateModal = (props: DonateModalProps) => {
   const { open, onClose, client, tokenId } = props
   const [amount, setAmount] = useState('')
   const [amountError, setAmountError] = useState(false)
+  const [amountErrorMessage, setAmountErrorMessage] = useState('')
+  const [balance, setBalance] = useState<ethers.BigNumber>(ethers.BigNumber.from(0))
+
+  useEffect(() => {
+    client.signer.getBalance().then((b: ethers.BigNumber) => {
+      setBalance(b)
+    })
+  }, [client.signer])
+
+  const isValidEth = useCallback((pay?: ethers.BigNumber, have?: ethers.BigNumber) => {
+    if (pay?.lt(ethers.BigNumber.from(100))) {
+      setAmountErrorMessage('more donate needded')
+      return false
+    } else if (have?.lt(pay || 0)) {
+      setAmountErrorMessage('input must be less than you have')
+      return false
+    }
+    return true
+  }, [])
 
   const handleSubmit = useCallback(async () => {
     if (typeof(tokenId) === 'undefined') return
@@ -26,10 +41,10 @@ export const DonateModal = (props: DonateModalProps) => {
     } catch {
       // nothing TODO
     }
-    if (!isValidEth(eth)) return
+    if (!isValidEth(eth, balance)) return
     await client.donateToToken(tokenId, { value: eth })
     onClose()
-  }, [amount])
+  }, [amount, balance, client, isValidEth, onClose, tokenId])
 
   const handleChangeAmount = useCallback((s: string) => {
     setAmount(s)
@@ -39,8 +54,8 @@ export const DonateModal = (props: DonateModalProps) => {
     } catch {
       // nothing TODO
     }
-    setAmountError(!isValidEth(eth))
-  }, [])
+    setAmountError(!isValidEth(eth, balance))
+  }, [balance, isValidEth])
 
   if (typeof(tokenId) === 'undefined') return <></>
 
@@ -78,7 +93,7 @@ export const DonateModal = (props: DonateModalProps) => {
           <TextField
             onChange={e => handleChangeAmount(e.target.value)}
             error={amountError}
-            helperText={ amountError ? 'more donate needded' : ''}
+            helperText={ amountError ? amountErrorMessage : ''}
             variant='outlined'
             placeholder='donate'
             InputProps={{
@@ -99,6 +114,11 @@ export const DonateModal = (props: DonateModalProps) => {
         >
           submit
         </Button>
+        <Box mt='8px'>
+          <Typography variant='body2'>
+            {`you have ${ethers.utils.formatEther(balance)}MATIC`}
+          </Typography>
+        </Box>
       </Box>
     </Modal>
   )
