@@ -28,14 +28,14 @@ describe('Token contract', function () {
 
   it('safesafeMint success', async function () {
     expect(await contract.totalSupply()).to.equal(0)
-    await contract.safeMint(owner.address, dummyURL, { value })
+    await contract.safeMint(owner.address, dummyURL, 100, { value })
     expect(await contract.totalSupply()).to.equal(1)
     expect(await contract.estimateEarn(0)).to.equal(ethers.utils.parseEther('0.001'))
   })
 
   it('safeMint require value', async function () {
     expect(await contract.totalSupply()).to.equal(0)
-    await expect(contract.connect(addr1).safeMint(addr1.address, dummyURL)).to.revertedWith('safeMint needs tx value more than 0.1 MATIC')
+    await expect(contract.connect(addr1).safeMint(addr1.address, dummyURL, 100)).to.revertedWith('safeMint needs tx value more than 100 wei')
     expect(await contract.totalSupply()).to.equal(0)
   })
 
@@ -45,7 +45,7 @@ describe('Token contract', function () {
     const totalDonatedAmount = ethers.utils.parseEther('1.1')
     const restAmount = ethers.utils.parseEther('1.089')
     const tokenId = 0
-    await contract.safeMint(owner.address, dummyURL, { value })
+    await contract.safeMint(owner.address, dummyURL, 100, { value })
     
     expect(contract.donateToToken(9999, {value: donateAmount})).to.revertedWith('Token not exists')
     await contract.donateToToken(0, {value: donateAmount})
@@ -55,6 +55,8 @@ describe('Token contract', function () {
     expect(await addr1.getBalance()).to.not.greaterThan(defaultAmount)
     
     expect(await contract.connect(addr1).withdrawFromToken(tokenId)).to.not.be.reverted
+    expect(await contract.estimateEarn(0)).to.equal(ethers.utils.parseEther('0.01089'))
+    expect(await contract.connect(addr1).estimateEarn(0)).to.equal(0)
     expect(await contract.getBalance()).to.equal(restAmount)
     expect(await contract.getBalanceOfToken(tokenId)).to.equal(restAmount)
     expect(await addr1.getBalance()).to.greaterThan(defaultAmount)
@@ -63,8 +65,8 @@ describe('Token contract', function () {
 
   it('withdraw success from 2 tokens', async function () {
     const donateAmount = ethers.utils.parseEther('0.1')
-    await contract.safeMint(owner.address, dummyURL, { value })
-    await contract.safeMint(owner.address, dummyURL, { value })
+    await contract.safeMint(owner.address, dummyURL, 100, { value })
+    await contract.safeMint(owner.address, dummyURL, 100, { value })
     await contract.donateToToken(0, {value: donateAmount})
     await contract.donateToToken(1, {value: donateAmount})
     expect(await contract.getBalance()).to.equal(ethers.utils.parseEther('0.4'))
@@ -79,7 +81,7 @@ describe('Token contract', function () {
     const donateAmount = ethers.utils.parseEther('1')
     const restAmount = ethers.utils.parseEther('0')
     const tokenId = 0
-    await contract.safeMint(owner.address, dummyURL, { value })
+    await contract.safeMint(owner.address, dummyURL, 100, { value })
     await contract.donateToToken(0, {value: donateAmount})
     expect(contract.setDistoributeNum(0, 0.1)).to.be.reverted
     expect(contract.setDistoributeNum(0, 0)).to.be.revertedWith("Num must be greater than 0")
@@ -91,7 +93,7 @@ describe('Token contract', function () {
     
     expect(await contract.connect(addr1).withdrawFromToken(tokenId)).to.not.be.reverted
     expect(await contract.getBalance()).to.equal(restAmount)
-    expect(await contract.getBalanceOfToken(tokenId)).to.equal(restAmount)
+    expect(contract.getBalanceOfToken(tokenId)).to.be.revertedWith("Token not exists")
     expect(await addr1.getBalance()).to.greaterThan(defaultAmount)
   })
 })

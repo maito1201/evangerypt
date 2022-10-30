@@ -5,6 +5,7 @@ import { ethers } from 'ethers'
 type MintModalProps = {
   open: boolean
   onClose: () => void
+  client: ethers.Contract
 }
 
 const isValidUrl = (s: string) => {
@@ -20,7 +21,7 @@ const isValidDistribute = (num: number) => {
 }
 
 export const MintModal = (props: MintModalProps) => {
-  const { open, onClose } = props
+  const { open, onClose, client } = props
   const [url, setUrl] = useState('')
   const [urlError, setUrlError] = useState(false)
   const [amount, setAmount] = useState('')
@@ -28,7 +29,7 @@ export const MintModal = (props: MintModalProps) => {
   const [distribute, setDistribute] = useState('')
   const [distributeError, setDistributeError] = useState(false)
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     let eth: ethers.BigNumber | undefined = undefined
     const num = parseInt(distribute)
     try {
@@ -37,7 +38,7 @@ export const MintModal = (props: MintModalProps) => {
       // nothing TODO
     }
     if (!isValidUrl(url) || !isValidEth(eth) || !isValidDistribute(num)) return
-    console.log('submit')
+    await client.safeMint(await client.signer.getAddress(), url, num, { value: eth })
   }, [url, amount, distribute])
 
   const handleChangeUrl = useCallback((s: string) => {
