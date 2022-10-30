@@ -60,7 +60,7 @@ export const TokenCard = (props: TokenItemProps) => {
           </Typography>
         </Box>
         <Box onClick={() => onClickLink(token.id)} sx={{ wordBreak: 'break-all' }}>
-          <a href={ogp.url} target='_blank' rel='noopener noreferrer'>
+          <a href={ogp.url || token.url} target='_blank' rel='noopener noreferrer'>
             <Typography variant='body1' color='#1d9bd1'>
               {token.url}
             </Typography>
