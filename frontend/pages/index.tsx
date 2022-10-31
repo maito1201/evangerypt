@@ -29,7 +29,7 @@ export default function Home() {
       justifyContent: 'center',
       height: '100vh'
     }}>
-      {isMobile ? <MetamaskMobile /> : 'conecting...'}
+      {isMobile ? <MetamaskMobile /> : <p>conecting...please install and connect MetaMask</p>}
     </Box>
   )
 
