@@ -1,11 +1,11 @@
 import { ethers } from "hardhat";
 
-const contractAddress = '0x06be81a7DF86A9fb2C412cf9b10eB0B2aB233357'
+const contractAddress = '0x3f578Ed2AA8825fA3A73DF82AF55F19014534550'
 
 async function main() {
   const EVT = await ethers.getContractFactory("EvangeryptToken");
   const token = await EVT.attach(contractAddress)
-  const log = await token.burn(0)
+  const log = await token.burn(3)
   console.log(`burned ${log.hash}`);
 }
 

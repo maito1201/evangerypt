@@ -4,7 +4,7 @@ import { ethers } from 'ethers'
 
 import artifact from '../../abi/EvangeryptToken.json'
 
-const nft_address = '0x06be81a7DF86A9fb2C412cf9b10eB0B2aB233357'
+const nft_address = '0x3f578Ed2AA8825fA3A73DF82AF55F19014534550'
 
 const chainId = '0x13881'
 

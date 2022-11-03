@@ -1,6 +1,6 @@
 import { ethers } from "hardhat";
 
-const contractAddress = '0x06be81a7DF86A9fb2C412cf9b10eB0B2aB233357'
+const contractAddress = '0x3f578Ed2AA8825fA3A73DF82AF55F19014534550'
 
 // MetaMask puclic key @maito1201
 const toAddress = '0xcBe10B9C0554ae99D9ec5d64e3E2F900615670dE'
