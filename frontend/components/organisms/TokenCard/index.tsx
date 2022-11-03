@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { Box, Typography, Button } from '@mui/material'
 
 import { TokenItem } from 'types/tokenItem'
-import { OGPImage } from 'components/molecules'
+import { OGPImage, EmbedTwitter } from 'components/molecules'
 import { useOGP } from 'modules/hooks/buildOGP'
 
 
@@ -17,9 +17,15 @@ type TokenItemProps = {
   onClickDonate: (n: number) => void
 }
 
+const hasTwitterUrl = (text: string) => {
+  const regexpTweet = /(https?:\/\/twitter\.com\/[a-zA-Z0-9.\-_@:/~?%&;=+#',()*!]+\/status\/[0-9]+)/g;
+  return regexpTweet.test(text) 
+}
+
 export const TokenCard = (props: TokenItemProps) => {
   const { token, isLast, onClickLink, onClickDonate } = props
   const ogp = useOGP(token.url)
+  const isTwitter = hasTwitterUrl(token.url)
   const etherString = useMemo(() => {
     return ethers.utils.formatEther(token.earn.toString())
   }, [token.earn])
@@ -38,7 +44,10 @@ export const TokenCard = (props: TokenItemProps) => {
         minWidth: '340px',
         textAlign: 'center' 
       }}>
-        { ogp &&
+        { isTwitter &&
+          <EmbedTwitter text={token.url}/>
+        }
+        { !isTwitter &&
           <Box onClick={() => onClickLink(token.id)}>
             <OGPImage ogp={ogp} />
           </Box>
